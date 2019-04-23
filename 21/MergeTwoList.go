@@ -9,6 +9,8 @@ Output: 1->1->2->3->4->4
 
 package main
 
+import "fmt"
+
 type ListNode struct {
 	Val  int
 	Next *ListNode
@@ -16,8 +18,8 @@ type ListNode struct {
 
 func AddToNewList(prev, p *ListNode) (*ListNode, *ListNode) {
 	prev.Next = p
-	p = p.Next
 	prev = p
+	p = p.Next
 	return prev, p
 }
 
@@ -39,22 +41,67 @@ func MergeTwoSortList(l1, l2 *ListNode) *ListNode {
 
 	for p1 != nil && p2 != nil {
 		if p1.Val >= p2.Val {
-			prev, p2 = AddToNewList(prev, p2)
+			prevN, p2N := AddToNewList(prev, p2)
+			prev = prevN
+			p2 = p2N
 		} else {
-			prev, p1 = AddToNewList(prev, p1)
+			prevN, p1N := AddToNewList(prev, p1)
+			prev = prevN
+			p1 = p1N
 		}
 	}
 
 	for p1 != nil {
-		prev, p1 = AddToNewList(prev, p1)
+		prevN, p1N := AddToNewList(prev, p1)
+		prev = prevN
+		p1 = p1N
 	}
 	for p2 != nil {
-		prev, p2 = AddToNewList(prev, p2)
+		prevN, p2N := AddToNewList(prev, p2)
+		prev = prevN
+		p2 = p2N
 	}
 
 	return head.Next
 }
 
-func main() {
+func CreateListNodes(datas []int) *ListNode {
+	var head *ListNode = new(ListNode)
+	prev := head
+	for _, d := range datas {
+		newNode := CreateListNode(d)
+		prev.Next = newNode
+		prev = newNode
+	}
+	return head.Next
+}
 
+func CreateListNode(data int) *ListNode {
+	l := new(ListNode)
+	l.Val = data
+	l.Next = nil
+	return l
+}
+
+func PrintLinkList(l1 *ListNode) {
+	for l1 != nil {
+		fmt.Println(l1.Val)
+		l1 = l1.Next
+	}
+}
+
+func main() {
+	l1 := []int{1, 2, 3, 4, 5, 8, 9}
+	l2 := []int{1, 3, 5, 7, 9}
+
+	l1L := CreateListNodes(l1)
+	PrintLinkList(l1L)
+	l2L := CreateListNodes(l2)
+	PrintLinkList(l2L)
+
+	r := MergeTwoSortList(l1L, l2L)
+	for r != nil {
+		fmt.Println(r.Val)
+		r = r.Next
+	}
 }
