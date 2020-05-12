@@ -1,4 +1,5 @@
 /*
+20 Valid Parentheses
 Given a string containing just the characters '(', ')', '{', '}', '[' and ']', determine if the input string is valid.
 
 An input string is valid if:
@@ -7,6 +8,11 @@ An input string is valid if:
 2. Open brackets must be closed in the correct order.
 
 Note that an empty string is also considered valid.
+
+Algothim:
+
+Use stack to push the left slice, once check the right slice, pop the stack.
+
 */
 
 package main
@@ -47,21 +53,26 @@ func IsValid(str string) bool {
 		return true
 	}
 
-	leftSlice := make([]int, 0, len(str))
+	lenthStack := len(str)
+	stack := make([]int, lenthStack, lenthStack)
+	stackTopIndex := 0
 	for i := 0; i < len(str); i++ {
 		brakeType := IsBrake(str[i])
 		if brakeType == None {
 			return false
 		}
 		if brakeType%2 == 1 {
-			leftSlice = append(leftSlice, brakeType)
+			stack[stackTopIndex] = brakeType
+			stackTopIndex++
+			//stack = append(stack, brakeType)
 		} else {
-			if len(leftSlice) == 0 {
+			if stackTopIndex == 0 {
 				return false
 			} else {
-				top := leftSlice[len(leftSlice)-1]
+				top := stack[stackTopIndex-1]
 				if top == brakeType-1 {
-					leftSlice = leftSlice[:len(leftSlice)-1]
+					stackTopIndex--
+					//stack = stack[:len(stack)-1]
 					continue
 				} else {
 					return false
@@ -70,10 +81,14 @@ func IsValid(str string) bool {
 		}
 
 	}
-	return true
+	if stackTopIndex == 0 {
+		return true
+	}
+	return false
 }
 
 func main() {
+	fmt.Println(IsValid("["))
 	fmt.Println(IsValid("[]"))
 	fmt.Println(IsValid("[[[[]]]]"))
 	fmt.Println(IsValid(""))
